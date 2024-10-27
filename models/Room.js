@@ -15,14 +15,15 @@ const Room = function(room) {
 Room.getBooking = async function(userId,  page = 0, limit = 10, sort = 'desc' ) {
   try {
     const connection = await connectDatabase();
+    const offset = page * limit;
     const [rows] = await connection.query(`SELECT Rooms.name AS room_name, Hotels.name AS hotel_name, Reservations.checkin_date, 
                                             Reservations.checkout_date, Reservations.status, Rooms.price
                                             FROM Reservations
                                             JOIN Rooms ON Reservations.room_id = Rooms.room_id
                                             JOIN Hotels ON Rooms.hotel_id = Hotels.hotel_id
                                             WHERE Reservations.user_id = ?                                
-                                            ORDER BY Reservations.checkin_date ${sort}
-                                            LIMIT ? OFFSET ?;`, [userId, limit, page]);
+                                            ORDER BY Reservations.checkin_date ${sort === 'asc' ? 'ASC' : 'DESC'}
+                                            LIMIT ? OFFSET ?;`, [userId, Number(limit), Number(offset)]);
     return rows;
   } catch (error) {
     console.error('Error executing query:', error);
