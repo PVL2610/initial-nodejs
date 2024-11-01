@@ -5,20 +5,88 @@ const userController = require('../controllers/userController');
 const authenticateToken = require('../middleware/authMiddleware');
 const passport = require('passport'); 
 
+/**
+ * @swagger
+ * /api/user/register:
+ *   post:
+ *     summary: Register
+ *     parameters:
+ *       - in: query
+ *         name: name
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: name
+ *       - in: query
+ *         name: phone
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: phone
+ *       - in: query
+ *         name: address
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: address
+ *       - in: query
+ *         name: email
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: email
+ *       - in: query
+ *         name: password
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: password
+ *         description: password
+ *  
+ *     responses:
+ *       200:
+ *         description: Đăng ký thành công
+ *       404:
+ *         description: Lỗi cú pháp
+ *       500:
+ *         description: Lỗi server
+ */
 router.post('/register', userController.register);
+/**
+ * @swagger
+ * /api/user/login:
+ *   post:
+ *     summary: Login
+ *     parameters:
+ *       - in: query
+ *         name: email
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: email
+ *       - in: query
+ *         name: password
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: password
+ *         description: password
+ *     responses:
+ *       200:
+ *         description: Đăng nhập thành công
+ *       404:
+ *         description: Lỗi cú pháp
+ *       500:
+ *         description: Lỗi server
+ */
 router.post('/login', userController.login);
 /**
  * @swagger
  * /api/user/profile:
  *   get:
  *     summary: Get user profile
- *     parameters:
- *       - in: query
- *         name: user_id
- *         required: true
- *         schema:
- *           type: string
- *         description: ID của người dùng
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Thông tin người dùng
@@ -34,13 +102,8 @@ router.get('/profile', authenticateToken, userController.getProfile);
  * /api/user/review:
  *   get:
  *     summary: Get user review
- *     parameters:
- *       - in: query
- *         name: user_id
- *         required: true
- *         schema:
- *           type: string
- *         description: ID của người dùng
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Đánh giá của người dùng
@@ -49,18 +112,15 @@ router.get('/profile', authenticateToken, userController.getProfile);
  *       500:
  *         description: Lỗi server
  */
-router.get('/review', userController.getReview);
+router.get('/review', authenticateToken, userController.getReview);
 /**
  * @swagger
  * /api/user/booking:
  *   get:
  *     summary: Get user booking
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
- *       - in: query
- *         name: user_id
- *         required: true
- *         schema:
- *           type: string
  *       - in: query
  *         name: page
  *         required: false
@@ -71,7 +131,7 @@ router.get('/review', userController.getReview);
  *         required: false
  *         schema:
  *           type: number
- *         description: ID của người dùng
+ *         description: Số lượng booking
  *       - in: query
  *         name: sort
  *         required: false
@@ -85,13 +145,15 @@ router.get('/review', userController.getReview);
  *       500:
  *         description: Lỗi server
  */
-router.get('/booking', userController.getBooking);
+router.get('/booking', authenticateToken, userController.getBooking);
 
 /**
  * @swagger
  * /api/user/room:
  *   get:
  *     summary: Get room booking
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: query
  *         name: reservationId
@@ -107,7 +169,7 @@ router.get('/booking', userController.getBooking);
  *       500:
  *         description: Lỗi server
  */
-router.get('/room', userController.getRoomBooked);
+router.get('/room', authenticateToken, userController.getRoomBooked);
 
 router.get('/protected', passport.authenticate('jwt', { session: false }), (req, res) => {
     res.json({ message: 'Bạn đã truy cập thành công vào route bảo vệ!' });

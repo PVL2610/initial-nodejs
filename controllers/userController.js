@@ -7,7 +7,7 @@ const passport = require('passport');
 
 class userController {
     async register(req, res) {
-        const { name, phone, address, email, password } = req.body;
+        const { name, phone, address, email, password } = req.query;
         try {
             const existingUser = await User.findByEmail(email);
             if (existingUser) {
@@ -66,7 +66,7 @@ class userController {
     
     async getReview(req, res, next) {
         try {
-            const reviews = await HotelReview.getReview(req.query.user_id);
+            const reviews = await HotelReview.getReview(req.user.user_id);
             res.status(200).json(reviews);
         } catch (error) {
             res.status(500).json({ error: "Internal Server Error" });
@@ -75,7 +75,7 @@ class userController {
 
     async getBooking(req, res, next) {
         try {
-            const rooms = await Room.getBooking(req.query.user_id, req.query.page, req.query.limit, req.query.sort);
+            const rooms = await Room.getBooking(req.user.user_id, req.query.page, req.query.limit, req.query.sort);
             res.status(200).json(rooms);
         } catch (error) {
             res.status(500).json({ error: "Internal Server Error" }); 
@@ -84,7 +84,7 @@ class userController {
 
     async getRoomBooked(req, res, next) {
         try {
-            const room = await Room.getBookingDetails(req.query.reservationId);
+            const room = await Room.getBookingDetails(req.user.user_id, req.query.reservationId);
             if (room) {
                 res.status(200).json(room); 
             } else {

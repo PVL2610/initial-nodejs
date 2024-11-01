@@ -15,7 +15,7 @@ HotelReview.getReview = async function(userId) {
                                             FROM HotelReviews hr
                                             WHERE hr.user_id = ?
                                             ORDER BY hr.created_at DESC`, [userId]);
-    return rows[0];
+    return rows;
   } catch (error) {
     console.error('Error executing query:', error);
     throw error;
