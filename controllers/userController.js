@@ -3,6 +3,7 @@ const HotelReview = require('../models/HotelReview');
 const Room = require('../models/Room')
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const passport = require('passport');
 
 class userController {
     async register(req, res) {
@@ -23,44 +24,75 @@ class userController {
     }
 
     async login(req, res) {
-        const { email, password } = req.body;
+        // const { email, password } = req.body;
+        // try {
+        //     const user = await User.findByEmail(email);
+        //     if (!user) {
+        //         return res.status(401).json({ message: "Invalid email or password" });
+        //     }
+
+        //     const isPasswordValid = await bcrypt.compare(password, user.password);
+        //     if (!isPasswordValid) {
+        //         return res.status(401).json({ message: "Invalid email or password" });
+        //     }
+
+        //     const token = jwt.sign({ user_id: user.user_id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '3m' });
+        //     res.status(200).json({ message: "Login successful", token });
+        // } catch (error) {
+        //     res.status(500).json({ error: "Internal Server Error" });
+        // }
+
+        passport.authenticate('local', { session: false }, (err, user, info) => {
+            if (err || !user) {
+              return res.status(400).json({ message: info ? info.message : 'Đăng nhập thất bại', user });
+            }
+        
+            const token = jwt.sign({ user_id: user.user_id, email: user.email }, process.env.JWT_SECRET, { expiresIn: 3600 });
+            return res.json({ message: 'Đăng nhập thành công!', token });
+          })(req, res);
+    }
+    async getProfile(req, res) {
         try {
-            const user = await User.findByEmail(email);
-            if (!user) {
-                return res.status(401).json({ message: "Invalid email or password" });
+            const user = await User.getUserById(req.user.user_id);
+            if (user) {
+                res.status(200).json(user);
+            } else {
+                res.status(404).json({ message: "User not found" });
             }
-
-            const isPasswordValid = await bcrypt.compare(password, user.password);
-            if (!isPasswordValid) {
-                return res.status(401).json({ message: "Invalid email or password" });
-            }
-
-            const token = jwt.sign({ user_id: user.user_id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
-            res.status(200).json({ message: "Login successful", token });
         } catch (error) {
             res.status(500).json({ error: "Internal Server Error" });
         }
     }
-    getProfile(req, res, next) {
-        User.getUserById(req.query.user_id)
-            .then(user => res.json(user))
-            .catch(next);
-    }
     
-    getReview(req, res, next) {
-        HotelReview.getReview(req.query.user_id)
-            .then(reviews => res.json(reviews))
-            .catch(next);
+    async getReview(req, res, next) {
+        try {
+            const reviews = await HotelReview.getReview(req.query.user_id);
+            res.status(200).json(reviews);
+        } catch (error) {
+            res.status(500).json({ error: "Internal Server Error" });
+        }
     }
-    getBooking(req, res, next) {
-        Room.getBooking(req.query.user_id,  req.query.page, req.query.limit, req.query.sort )
-            .then(rooms => res.json(rooms))
-            .catch(next);
+
+    async getBooking(req, res, next) {
+        try {
+            const rooms = await Room.getBooking(req.query.user_id, req.query.page, req.query.limit, req.query.sort);
+            res.status(200).json(rooms);
+        } catch (error) {
+            res.status(500).json({ error: "Internal Server Error" }); 
+        }
     }
-    getRoomBooked(req, res, next) {
-        Room.getBookingDetails(req.query.reservationId)
-            .then(room => res.json(room))
-            .catch(next);
+
+    async getRoomBooked(req, res, next) {
+        try {
+            const room = await Room.getBookingDetails(req.query.reservationId);
+            if (room) {
+                res.status(200).json(room); 
+            } else {
+                res.status(404).json({ message: "Room not found" }); 
+            }
+        } catch (error) {
+            res.status(500).json({ error: "Internal Server Error" }); 
+        }
     }
 }
 

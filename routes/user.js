@@ -3,6 +3,7 @@ const router = express.Router();
 
 const userController = require('../controllers/userController');
 const authenticateToken = require('../middleware/authMiddleware');
+const passport = require('passport'); 
 
 router.post('/register', userController.register);
 router.post('/login', userController.login);
@@ -107,5 +108,10 @@ router.get('/booking', userController.getBooking);
  *         description: Lỗi server
  */
 router.get('/room', userController.getRoomBooked);
+
+router.get('/protected', passport.authenticate('jwt', { session: false }), (req, res) => {
+    res.json({ message: 'Bạn đã truy cập thành công vào route bảo vệ!' });
+});
+  
 
 module.exports = router;

@@ -1,10 +1,12 @@
 const express = require('express');
 const app = express();
-const port = 3000;
+require('dotenv').config();
 const logMiddleware = require('./middleware/logMiddleware');
 const route = require('./routes');
 const db = require('./config/db');
 const { swaggerUi, swaggerDocs, swaggerAuth } = require('./swagger');
+const passport = require('passport'); 
+require('./config/passport');
 
 const helmet = require('helmet');
 const cors = require('cors');
@@ -44,9 +46,10 @@ db.connectDatabase();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(logMiddleware);
+app.use(passport.initialize());
 route(app);
 app.use('/docs', swaggerAuth, swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
-app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`);
+app.listen(process.env.PORT, () => {
+    console.log(`Example app listening on port ${process.env.PORT}`);
 })

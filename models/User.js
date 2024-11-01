@@ -19,9 +19,12 @@ User.getUserById = async function(id) {
     throw error;
   }
 };
-// Create new user
+
 User.createUser = async function(newUser) {
   try {
+    if (!newUser.password) {
+      throw new Error("Password is required for hashing.");
+    }
     const hashedPassword = await bcrypt.hash(newUser.password, 10);
     const connection = await connectDatabase();
     const [result] = await connection.query(
@@ -35,7 +38,21 @@ User.createUser = async function(newUser) {
   }
 };
 
-// Find user by email
+User.createFacebookUser = async function(facebookUser) {
+  try {
+    const connection = await connectDatabase();
+    const [result] = await connection.query(
+      "INSERT INTO hotelbooking.Users (name, email, password) VALUES (?, ?, ?)", 
+      [facebookUser.name, facebookUser.email, null] 
+    );
+    return result.insertId;
+  } catch (error) {
+    console.error('Error executing query:', error);
+    throw error;
+  }
+};
+
+
 User.findByEmail = async function(email) {
   try {
     const connection = await connectDatabase();
