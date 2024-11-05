@@ -1,7 +1,8 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcrypt');
-const User = require('../models/User'); 
+const User = require('../models/user.model'); 
+const userService = require('../services/userService');
 const JwtStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
 const FacebookStrategy = require('passport-facebook').Strategy;
@@ -13,7 +14,7 @@ passport.use(new LocalStrategy({
   usernameField: 'email'
 }, async (email, password, done) => {
   try {
-    const user = await User.findByEmail(email);
+    const user = await userService.findByEmail(email);
     if (!user) {
       return done(null, false, { message: 'Email không hợp lệ.' });
     }
@@ -22,7 +23,7 @@ passport.use(new LocalStrategy({
     if (!isMatch) {
       return done(null, false, { message: 'Mật khẩu không đúng.' });
     }
-
+    
     return done(null, user);
   } catch (error) {
     return done(error);
@@ -37,7 +38,7 @@ const opts = {
   
 passport.use(new JwtStrategy(opts, async (jwt_payload, done) => {
 try {
-    const user = await User.getUserById(jwt_payload.user_id);
+    const user = await userService.getUserById(jwt_payload.user_id);
     if (user) {
     return done(null, user);
     }
@@ -55,7 +56,7 @@ passport.use(new FacebookStrategy({
 }, async (accessToken, refreshToken, profile, done) => {
   try {
     const email = profile.emails[0].value;
-    let user = await User.findByEmail(email);
+    let user = await userService.findByEmail(email);
 
     if (!user) {
       const newUser = {   
@@ -63,8 +64,8 @@ passport.use(new FacebookStrategy({
         email: email,
         password: null
       };
-      const userId = await User.createFacebookUser(newUser);
-      user = await User.getUserById(userId);
+      const userId = await userService.createFacebookUser(newUser);
+      user = await userService.getUserById(userId);
     }
 
     done(null, user);
@@ -82,7 +83,7 @@ passport.use(new GoogleStrategy({
   },
   async (accessToken, refreshToken, profile, done) => {
     try {
-      let user = await User.findByEmail(profile.emails[0].value);
+      let user = await userService.findByEmail(profile.emails[0].value);
       
       if (!user) {
         const googleUser = {
@@ -90,7 +91,7 @@ passport.use(new GoogleStrategy({
           email: profile.emails[0].value,
         };
         const userId = await User.createFacebookUser(googleUser);
-        user = await User.getUserById(userId);
+        user = await userService.getUserById(userId);
       }
       
       return done(null, user);

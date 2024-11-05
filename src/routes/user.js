@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const userController = require('../controllers/userController');
+const userController = require('../controllers/user.controller');
 const authenticateToken = require('../middleware/authMiddleware');
 const passport = require('passport'); 
 
@@ -10,75 +10,74 @@ const passport = require('passport');
  * /api/user/register:
  *   post:
  *     summary: Register
- *     parameters:
- *       - in: query
- *         name: name
- *         required: true
- *         schema:
- *           type: string
- *         description: name
- *       - in: query
- *         name: phone
- *         required: true
- *         schema:
- *           type: string
- *         description: phone
- *       - in: query
- *         name: address
- *         required: true
- *         schema:
- *           type: string
- *         description: address
- *       - in: query
- *         name: email
- *         required: true
- *         schema:
- *           type: string
- *         description: email
- *       - in: query
- *         name: password
- *         required: true
- *         schema:
- *           type: string
- *           format: password
- *         description: password
- *  
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: Tên của người dùng
+ *                 example: John Doe
+ *               phone:
+ *                 type: string
+ *                 description: Số điện thoại
+ *                 example: 123456789
+ *               address:
+ *                 type: string
+ *                 description: Địa chỉ
+ *                 example: 123 Main St
+ *               email:
+ *                 type: string
+ *                 description: Địa chỉ email
+ *                 example: johndoe@example.com
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 description: Mật khẩu
+ *                 example: strongpassword
  *     responses:
  *       200:
  *         description: Đăng ký thành công
- *       404:
+ *       400:
  *         description: Lỗi cú pháp
  *       500:
  *         description: Lỗi server
  */
+
 router.post('/register', userController.register);
 /**
  * @swagger
  * /api/user/login:
  *   post:
  *     summary: Login
- *     parameters:
- *       - in: query
- *         name: email
- *         required: true
- *         schema:
- *           type: string
- *         description: email
- *       - in: query
- *         name: password
- *         required: true
- *         schema:
- *           type: string
- *           format: password
- *         description: password
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 description: Địa chỉ email
+ *                 example: pvl@gmail.com
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 description: Mật khẩu
+ *                 example: pvl2610@
  *     responses:
  *       200:
  *         description: Đăng nhập thành công
- *       404:
+ *       400:
  *         description: Lỗi cú pháp
  *       500:
  *         description: Lỗi server
  */
+
 router.post('/login', userController.login);
 /**
  * @swagger
@@ -95,7 +94,7 @@ router.post('/login', userController.login);
  *       500:
  *         description: Lỗi server
  */
-router.get('/profile', authenticateToken, userController.getProfile);
+router.get('/profile', authenticateToken(1, 2, 3), userController.getProfile);
 
 /**
  * @swagger
@@ -112,7 +111,7 @@ router.get('/profile', authenticateToken, userController.getProfile);
  *       500:
  *         description: Lỗi server
  */
-router.get('/review', authenticateToken, userController.getReview);
+router.get('/review', authenticateToken(1, 2, 3), userController.getReview);
 /**
  * @swagger
  * /api/user/booking:
@@ -145,7 +144,7 @@ router.get('/review', authenticateToken, userController.getReview);
  *       500:
  *         description: Lỗi server
  */
-router.get('/booking', authenticateToken, userController.getBooking);
+router.get('/booking', authenticateToken(1, 2, 3), userController.getBooking);
 
 /**
  * @swagger
@@ -169,11 +168,13 @@ router.get('/booking', authenticateToken, userController.getBooking);
  *       500:
  *         description: Lỗi server
  */
-router.get('/room', authenticateToken, userController.getRoomBooked);
+router.get('/room', authenticateToken(1, 2, 3), userController.getRoomBooked);
+// router.patch('/editProfile', authenticateToken())
 
 router.get('/protected', passport.authenticate('jwt', { session: false }), (req, res) => {
     res.json({ message: 'Bạn đã truy cập thành công vào route bảo vệ!' });
 });
+
   
 
 module.exports = router;

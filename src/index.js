@@ -1,10 +1,18 @@
 const express = require('express');
 const app = express();
-require('dotenv').config();
+require('dotenv').config({ path: './src/.env' });
 const logMiddleware = require('./middleware/logMiddleware');
 const route = require('./routes');
-const db = require('./config/db');
-const { swaggerUi, swaggerDocs, swaggerAuth } = require('./swagger');
+const sequelize = require('./config/db');
+const Hotel = require('./models/hotel.model');
+const Room = require('./models/room.model');
+const Role = require('./models/role.model');
+const User = require('./models/user.model');
+const Reservation = require('./models/reservation.model');
+const HotelReview = require('./models/hotelReview.model');
+
+
+const { swaggerUi, swaggerDocs, swaggerAuth } = require('./config/swagger');
 const passport = require('passport'); 
 require('./config/passport');
 
@@ -41,7 +49,12 @@ app.use(
     })
   );
 
-db.connectDatabase();
+// db.connectDatabase();
+sequelize.sync({ force: false })
+    .then(() => {
+        console.log('Database & tables created!');
+    })
+    .catch(error => console.log('Error creating database:', error));
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
