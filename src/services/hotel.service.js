@@ -1,6 +1,8 @@
 const Hotel = require('../models/hotel.model');
+const redisClient = require('../config/redisClient.config');
 
 async function getHotels() {
+    
     return await Hotel.findAndCountAll();
 }
 async function updateHotel(hotel) {
@@ -16,10 +18,16 @@ async function approveHotel(hotelId) {
     hotel.isApproved = 1;
     await hotel.save();
 }
+async function getHotelbyId(hotel_id) {
+    const hotel = await Hotel.findByPk(hotel_id);   
+    await redisClient.setEx(`hotel:${hotel_id}`, 3600, JSON.stringify(hotel));
+    return hotel;
+}
 
 
 module.exports = {
     getHotels,
     updateHotel,
     approveHotel,
+    getHotelbyId,
 }

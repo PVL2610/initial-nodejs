@@ -1,4 +1,4 @@
 const sayHello = (req, res) => {
-    res.send("Hello World!");
+    res.send(req.t('hello'));
 };
 module.exports = { sayHello };

@@ -1,23 +1,43 @@
 const express = require('express');
 const app = express();
+const path = require('path');
 require('dotenv').config({ path: './src/.env' });
-const logMiddleware = require('./middleware/logMiddleware');
+const logMiddleware = require('./middleware/log.middleware');
 const route = require('./routes');
 const sequelize = require('./config/db');
-const Hotel = require('./models/hotel.model');
-const Room = require('./models/room.model');
-const Role = require('./models/role.model');
-const User = require('./models/user.model');
-const Reservation = require('./models/reservation.model');
-const HotelReview = require('./models/hotelReview.model');
+const i18next = require('i18next');
+const i18nextMiddleware = require('i18next-http-middleware');
+const Backend = require('i18next-fs-backend');
 
-
-const { swaggerUi, swaggerDocs, swaggerAuth } = require('./config/swagger');
+const { swaggerUi, swaggerDocs, swaggerAuth } = require('./config/swagger.config');
 const passport = require('passport'); 
-require('./config/passport');
+require('./config/passport.config');
 
 const helmet = require('helmet');
 const cors = require('cors');
+
+
+
+// Use static folder
+// app.use(express.static(path.join(__dirname, 'public')));
+//Multiple language
+i18next
+  .use(Backend)                    
+  .use(i18nextMiddleware.LanguageDetector) 
+  .init({
+    backend: {
+      loadPath: __dirname + '/locales/{{lng}}/translation.json',
+    },
+    fallbackLng: 'en',                  // Ngôn ngữ mặc định
+    preload: ['en', 'vi'],              // Các ngôn ngữ được load sẵn
+    detection: {
+      order: ['header', 'querystring', 'cookie'],  // Thứ tự phát hiện ngôn ngữ
+      caches: ['cookie'],                          // Lưu ngôn ngữ vào cookie
+    },
+  });
+
+app.use(i18nextMiddleware.handle(i18next));
+
 var corsOptions = {
     "origin": "*",
     "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
@@ -58,9 +78,13 @@ sequelize.sync({ force: false })
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+//log api url
 app.use(logMiddleware);
+//passport
 app.use(passport.initialize());
+//route
 route(app);
+// swagger docs
 app.use('/docs', swaggerAuth, swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 app.listen(process.env.PORT, () => {

@@ -1,0 +1,28 @@
+{
+    "hello": "hello",
+    "welcome" : "Welcome",
+    "error": "An error occurred",
+    "server_error" : "Internal Server Error",
+    "login_success" : "Login successful!",
+    "register_success" : "User registered successfully",
+    "create_room_success" : "Room created successfully",
+    "approve_room_success" : "Room has been successfully approved",
+    "create_hotel_success" : "Hotel has been created successfully",
+    "update_hotel_success" : "Hotel has been updated successfully",
+    "delete_hotel_success" : "Hotel has been deleteed successfully",
+    "approve_hotel_success" : "Hotel has been successfully approved",
+    "create_admin_success" : "Admin has been created successfully",
+    "update_admin_success" : "Admin has been updated successfully",
+    "delete_admin_success" : "Admin has been deleteted successfully",
+    "email_already" : "Email is already registered",
+    "hotel_not_found" : "Hotel not found",
+    "user_not_found" : "User not found",
+    "room_not_found" : "Room not found",
+    "email_invalid" : "Invalid email",
+    "password_incorrect" : "Password is incorrect",
+    "login_failed" : "Login failed",
+    "require_token" : "Access token required",
+    "token_invalid" : "Invalid or expired token",
+    "access_denied" : "Access denied"
+  }
+  

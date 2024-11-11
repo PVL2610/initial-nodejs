@@ -1,10 +1,11 @@
 const User = require('../models/user.model');
-const reviewService = require('../services/reviewService');
-const roomService = require('../services/roomService');
-const bookingService = require('../services/bookingService');
-const userService = require('../services/userService');
+const reviewService = require('../services/review.service');
+const roomService = require('../services/room.service');
+const bookingService = require('../services/booking.service');
+const userService = require('../services/user.service');
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
+const { sendWelcomeEmail } = require('../services/mail.service');
 
 class userController {
     async register(req, res) {
@@ -12,15 +13,15 @@ class userController {
         try {
             const existingUser = await userService.findByEmail(email);
             if (existingUser) {
-                return res.status(400).json({ message: "Email is already registered" });
+                return res.status(400).json({ message: req.t('email_already') });
             }
             
             const newUser = { name, phone, address, email, password };
             const userId = await User.create(newUser);
-            
-            res.status(201).json({ message: "User registered successfully", new_user: userId });
+            await sendWelcomeEmail(email, name);
+            res.status(201).json({ message: req.t('register_success'), new_user: userId });
         } catch (error) {
-            res.status(500).json({ error: "Internal Server Error" });
+            res.status(500).json({ error: req.t('server_error') });
         }
     }
 
@@ -45,11 +46,11 @@ class userController {
         
         passport.authenticate('local', { session: false }, (err, user, info) => {
             if (err || !user) {
-              return res.status(400).json({ message: info ? info.message : 'Đăng nhập thất bại', user });
+                return res.status(400).json({ message: info ? req.t(info.message) : req.t('login_failed'), user });
             }
         
             const token = jwt.sign({ user_id: user.user_id, email: user.email, role_id: user.role_id }, process.env.JWT_SECRET, { expiresIn: 3600 });
-            return res.json({ message: 'Đăng nhập thành công!', token });
+            return res.json({ message: req.t('login_success'), token });
           })(req, res);
     }
     async getProfile(req, res) {
@@ -58,10 +59,10 @@ class userController {
             if (user) {
                 res.status(200).json(user);
             } else {
-                res.status(404).json({ message: "User not found" });
+                res.status(404).json({ message: req.t('user_not_found') });
             }
         } catch (error) {
-            res.status(500).json({ error: "Internal Server Error" });
+            res.status(500).json({ error: req.t('server_error') });
         }
     }
     
@@ -70,7 +71,7 @@ class userController {
             const reviews = await reviewService.getUserReviews(req.user.user_id);
             res.status(200).json(reviews);
         } catch (error) {
-            res.status(500).json({ error: "Internal Server Error" });
+            res.status(500).json({ error: req.t('server_error') });
         }
     }
 
@@ -87,7 +88,7 @@ class userController {
                 data: result.rows,
             });
         } catch (error) {
-            res.status(500).json({ error: "Internal Server Error" }); 
+            res.status(500).json({ error: req.t('server_error') }); 
         }
     }
 
@@ -97,10 +98,10 @@ class userController {
             if (room) {
                 res.status(200).json(room); 
             } else {
-                res.status(404).json({ message: "Room not found" }); 
+                res.status(404).json({ message: req.t('room_not_found') }); 
             }
         } catch (error) {
-            res.status(500).json({ error: "Internal Server Error" }); 
+            res.status(500).json({ error: req.t('server_error') }); 
         }
     }
 

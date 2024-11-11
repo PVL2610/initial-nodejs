@@ -2,7 +2,7 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcrypt');
 const User = require('../models/user.model'); 
-const userService = require('../services/userService');
+const userService = require('../services/user.service');
 const JwtStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
 const FacebookStrategy = require('passport-facebook').Strategy;
@@ -16,12 +16,12 @@ passport.use(new LocalStrategy({
   try {
     const user = await userService.findByEmail(email);
     if (!user) {
-      return done(null, false, { message: 'Email không hợp lệ.' });
+      return done(null, false, { message: 'email_invalid' });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return done(null, false, { message: 'Mật khẩu không đúng.' });
+      return done(null, false, { message: 'password_incorrect' });
     }
     
     return done(null, user);
@@ -90,8 +90,8 @@ passport.use(new GoogleStrategy({
           name: profile.displayName,
           email: profile.emails[0].value,
         };
-        const userId = await User.createFacebookUser(googleUser);
-        user = await userService.getUserById(userId);
+        const user = await userService.createFacebookUser(googleUser);
+        user = await userService.getUserById(user.dataValues.user_id);
       }
       
       return done(null, user);

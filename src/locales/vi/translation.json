@@ -1,0 +1,29 @@
+{
+    "hello": "Xin chào",
+    "welcome": "Chào mừng",
+    "error": "Đã xảy ra lỗi",
+    "server_error" : "Lỗi máy chủ",
+    "login_success": "Đăng nhập thành công!",
+    "register_success" : "Đăng ký thành công!",
+    "create_room_success" : "Tạo phòng thành công",
+    "approve_room_success" : "Duyệt phòng thành công",
+    "create_hotel_success" : "Khách sạn đã được tạo thành công",
+    "update_hotel_success" : "Khách sạn đã được cập nhật thành công",
+    "delete_hotel_success" : "Khách sạn đã được xóa thành công",
+    "approve_hotel_success" : "Duyệt khách sạn thành công",
+    "create_admin_success" : "Tạo tài khoản admin thành công",
+    "update_admin_success" : "Cập nhật tài khoản admin thành công",
+    "delete_admin_success" : "Xóa tài khoản admin thành công",
+    "email_already" : "Email này đã được đăng ký",
+    "hotel_not_found" : "không tìm thấy khách sạn",
+    "user_not_found" : "Không tìm thấy người dùng",
+    "room_not_found" : "Không tìm thấy phòng",
+    "email_invalid" : "Email không hợp lệ",
+    "password_incorrect" : "Mật khẩu không đúng",
+    "login_failed" : "Đăng nhập thất bại",
+    "require_token" : "Yêu cầu mã truy cập",
+    "token_invalid" : "Mã truy cập không hợp lệ hoặc đã hết hạn",
+    "access_denied" : "Truy cập bị từ chối"
+
+}
+  

@@ -1,4 +1,3 @@
-const { use } = require('passport');
 const User = require('../models/user.model');
 
 async function getUserById(userId) {
@@ -7,12 +6,10 @@ async function getUserById(userId) {
     });
 }
 
-// Method để tìm user theo email
 async function findByEmail(email) {
     return await User.findOne({ where: { email } });
 };
 
-// Method để tạo user Facebook
 async function createFacebookUser(facebookUser, role_id = 3) {
   return await User.create({
     name: facebookUser.name,
