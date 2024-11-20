@@ -6,7 +6,9 @@
   "scripts": {
     "start": "nodemon src/index.js",
     "test": "jest",
-    "start:consumer": "node src/kafka/consumer.js"
+    "start:consumer": "node src/kafka/consumer.js",
+    "lint": "eslint . --fix",
+    "format": "prettier --write ."
   },
   "repository": {
     "type": "git",
