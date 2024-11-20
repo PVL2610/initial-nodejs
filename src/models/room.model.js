@@ -2,49 +2,53 @@ const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../config/db');
 const Hotel = require('./hotel.model');
 
-const Room = sequelize.define('Room', {
+const Room = sequelize.define(
+  'Room',
+  {
     room_id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true,
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
     },
     hotel_id: {
-        type: DataTypes.INTEGER,
-        references: {
-            model: Hotel,
-            key: 'hotel_id',
-        },
+      type: DataTypes.INTEGER,
+      references: {
+        model: Hotel,
+        key: 'hotel_id',
+      },
     },
     name: {
-        type: DataTypes.STRING,
-        allowNull: false,
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     area: {
-        type: DataTypes.FLOAT,
+      type: DataTypes.FLOAT,
     },
     floor: {
-        type: DataTypes.INTEGER,
+      type: DataTypes.INTEGER,
     },
     type: {
-        type: DataTypes.ENUM('single', 'double', 'suite'),
-        allowNull: false,
+      type: DataTypes.ENUM('single', 'double', 'suite'),
+      allowNull: false,
     },
     status: {
-        type: DataTypes.ENUM('available', 'booked', 'maintenance'),
-        allowNull: false,
+      type: DataTypes.ENUM('available', 'booked', 'maintenance'),
+      allowNull: false,
     },
     price: {
-        type: DataTypes.DECIMAL(10, 2),
-        allowNull: false,
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: false,
     },
     isApproved: {
-        type: DataTypes.TINYINT,
-        defaultValue: 0,
-        allowNull: true,
+      type: DataTypes.TINYINT,
+      defaultValue: 0,
+      allowNull: true,
     },
-}, {
-    timestamps: false, 
-});
+  },
+  {
+    timestamps: false,
+  },
+);
 Hotel.hasMany(Room, { foreignKey: 'hotel_id' });
 
 Room.belongsTo(Hotel, { foreignKey: 'hotel_id' });

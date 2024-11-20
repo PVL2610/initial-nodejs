@@ -3,7 +3,7 @@ const router = express.Router();
 
 const userController = require('../controllers/user.controller');
 const authenticateToken = require('../middleware/auth.middleware');
-const passport = require('passport'); 
+const passport = require('passport');
 
 /**
  * @swagger
@@ -171,10 +171,12 @@ router.get('/booking', authenticateToken(1, 2, 3), userController.getBooking);
 router.get('/room', authenticateToken(1, 2, 3), userController.getRoomBooked);
 // router.patch('/editProfile', authenticateToken())
 
-router.get('/protected', passport.authenticate('jwt', { session: false }), (req, res) => {
+router.get(
+  '/protected',
+  passport.authenticate('jwt', { session: false }),
+  (req, res) => {
     res.json({ message: 'Bạn đã truy cập thành công vào route bảo vệ!' });
-});
-
-  
+  },
+);
 
 module.exports = router;

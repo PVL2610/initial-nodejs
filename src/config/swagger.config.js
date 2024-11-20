@@ -20,7 +20,7 @@ const swaggerOptions = {
         bearerAuth: {
           type: 'http',
           scheme: 'bearer',
-          bearerFormat: 'JWT', 
+          bearerFormat: 'JWT',
         },
       },
     },
@@ -29,10 +29,7 @@ const swaggerOptions = {
   apis: ['./src/routes/*.js'],
 };
 
-
-
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
-
 
 const swaggerAuth = basicAuth({
   users: { pvl: '261003' },

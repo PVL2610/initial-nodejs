@@ -1,5 +1,5 @@
 const generateWelcomeEmail = (userName) => {
-    return `
+  return `
         <html>
             <body style="font-family: Arial, sans-serif; color: #333; background-color: #f4f4f4; padding: 20px;">
                 <div style="max-width: 600px; margin: auto; background-color: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);">
@@ -31,7 +31,6 @@ const generateWelcomeEmail = (userName) => {
     `;
 };
 
-
 module.exports = {
-    generateWelcomeEmail
+  generateWelcomeEmail,
 };

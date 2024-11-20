@@ -1,5 +1,5 @@
 // const mysql = require('mysql2/promise');
-require('dotenv').config()
+require('dotenv').config({ path: './src/.env' });
 
 // async function connectDatabase() {
 //     try {
@@ -11,20 +11,25 @@ require('dotenv').config()
 //             port: process.env.DB_PORT
 //         });
 //         console.log('Connected to the database');
-//         return connection;   
+//         return connection;
 //       } catch (err) {
 //         console.log(err);
 //       }
 // }
 
-// module.exports = { connectDatabase }; 
+// module.exports = { connectDatabase };
 
 // config/db.js
 const { Sequelize } = require('sequelize');
 
-const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
-  host: process.env.DB_HOST,
-  dialect: 'mysql'
-});
+const sequelize = new Sequelize(
+  process.env.DB_NAME,
+  process.env.DB_USER,
+  process.env.DB_PASSWORD,
+  {
+    host: process.env.DB_HOST,
+    dialect: 'mysql',
+  },
+);
 
 module.exports = sequelize;

@@ -1,33 +1,37 @@
 const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../config/db');
 
-const Hotel = sequelize.define('Hotel', {
+const Hotel = sequelize.define(
+  'Hotel',
+  {
     hotel_id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true,
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
     },
     name: {
-        type: DataTypes.STRING,
-        allowNull: false,
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     address: {
-        type: DataTypes.STRING,
-        allowNull: false,
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     description: {
-        type: DataTypes.TEXT,
+      type: DataTypes.TEXT,
     },
     rating: {
-        type: DataTypes.FLOAT,
+      type: DataTypes.FLOAT,
     },
     isApproved: {
-        type: DataTypes.TINYINT,
-        defaultValue: 0,
-        allowNull: true,
+      type: DataTypes.TINYINT,
+      defaultValue: 0,
+      allowNull: true,
     },
-}, {
-    timestamps: false, 
-});
+  },
+  {
+    timestamps: false,
+  },
+);
 
 module.exports = Hotel;
