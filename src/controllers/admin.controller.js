@@ -49,8 +49,7 @@ class adminController {
         return res.status(404).json({ message: error.message });
       }
       if (error.message === 'Only admins can be deleted') {
-        return res.status(403).json({ message: error.message })
-        ;
+        return res.status(403).json({ message: error.message });
       }
       res.status(500).json({ error: req.t('server_error') });
     }

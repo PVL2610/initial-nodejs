@@ -8,7 +8,8 @@
     "test": "jest",
     "start:consumer": "node src/kafka/consumer.js",
     "lint": "eslint . --fix",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "prepare": "husky"
   },
   "repository": {
     "type": "git",
