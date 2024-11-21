@@ -1,8 +1,7 @@
 const kafka = require('../config/kafka.config');
 const sequelize = require('../config/db');
-const topicHandlers = require('./handlers'); // Import các topic và handler từ `handlers/index.js`
+const topicHandlers = require('./handlers');
 
-// Khởi tạo database
 sequelize
   .sync({ force: false })
   .then(() => {
@@ -10,7 +9,6 @@ sequelize
   })
   .catch((error) => console.log('Error creating database:', error));
 
-// Khởi tạo Kafka consumer
 const consumer = kafka.consumer({ groupId: 'hotel-group' });
 
 const connectConsumer = async () => {
@@ -28,7 +26,7 @@ const subscribeToTopics = async () => {
         try {
           const data = JSON.parse(message.value.toString());
           console.log(`Received message on topic ${topic}:`, data);
-          await handler(data); // Gọi handler tương ứng
+          await handler(data);
         } catch (error) {
           console.error(`Error processing message from topic ${topic}:`, error);
         }
